@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""SPN STOICA AI — releul FX GitHub (V1.1, 28.08.2026).
+"""SPN STOICA AI — releul FX GitHub (V1.2, 28.08.2026).
 
-V1.1: descărcarea cu antet de browser (unele gazde BNR refuză clientul Python
-implicit) + diagnostic complet per URL la eșec. Restul neschimbat: același
-format și sigiliu canonic ca registrul V2.0; fail-closed, fără commit la anomalie."""
+V1.2: parserul XML devine tolerant la namespace (XML-ul real de pe curs.bnr.ro
+folosește alt xmlns decât cel documentat) — se potrivesc elementele după numele
+local Cube/Rate, indiferent de namespace. V1.1: antet de browser la descărcare.
+Restul neschimbat: format și sigiliu canonic V2.0; fail-closed, fără commit la anomalie."""
 import hashlib
 import json
 import sys
@@ -22,7 +23,6 @@ HEADERS = {"User-Agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
                           "Chrome/126.0 Safari/537.36"),
            "Accept": "application/xml,text/xml,*/*"}
 REG = Path("BNR_FX_REGISTRY_LIVE.json")
-XSD = "http://www.bnr.ro/xsd"
 
 
 def canonical_sha256(payload: dict) -> str:
@@ -50,15 +50,31 @@ def fetch_xml() -> bytes:
     raise SystemExit("BNR inaccesibil de pe runner — vezi diagnosticul de mai sus.")
 
 
+def _local(tag: str) -> str:
+    return tag.rsplit("}", 1)[-1] if "}" in tag else tag
+
+
 def parse_eur(xml_bytes: bytes) -> dict:
     root = ET.fromstring(xml_bytes)
     out = {}
-    for cube in root.iter(f"{{{XSD}}}Cube"):
-        d = cube.get("date")
-        for rate in cube.iter(f"{{{XSD}}}Rate"):
-            if rate.get("currency") == "EUR" and rate.text:
-                out[d] = float(rate.text)
+    for el in root.iter():
+        if _local(el.tag) != "Cube":
+            continue
+        d = el.get("date")
+        if not d:
+            continue
+        for rate in el:
+            if _local(rate.tag) != "Rate":
+                continue
+            if rate.get("currency") == "EUR" and rate.text and rate.text.strip():
+                value = float(rate.text.strip())
+                mult = rate.get("multiplier")
+                if mult:
+                    value = value / float(mult)
+                out[d] = value
     if not out:
+        seen = sorted({_local(e.tag) for e in root.iter()})
+        print("DIAGNOSTIC parse — elemente găsite în XML:", ", ".join(seen[:20]))
         raise SystemExit("XML-ul BNR nu conține cursuri EUR — structură neașteptată.")
     return out
 
