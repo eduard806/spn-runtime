@@ -1,22 +1,26 @@
 #!/usr/bin/env python3
-"""SPN STOICA AI — releul FX GitHub (V1.0, 28.08.2026).
+"""SPN STOICA AI — releul FX GitHub (V1.1, 28.08.2026).
 
-Rulează în GitHub Actions (acces liber la BNR). Descarcă nbrfxrates10days.xml,
-extrage cursul EUR pe fiecare zi de PUBLICARE și îl îmbină în
-BNR_FX_REGISTRY_LIVE.json — același format și sigiliu canonic ca registrul
-V2.0 din runtime (records{data_publicării → rate}, integrity.sha256 pe JSON
-canonic fără câmpul integrity). Gate-ul V2.1 îl validează neschimbat.
-Fail-closed: orice anomalie → exit 1, fără commit."""
+V1.1: descărcarea cu antet de browser (unele gazde BNR refuză clientul Python
+implicit) + diagnostic complet per URL la eșec. Restul neschimbat: același
+format și sigiliu canonic ca registrul V2.0; fail-closed, fără commit la anomalie."""
 import hashlib
 import json
 import sys
 import urllib.request
+import urllib.error
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from pathlib import Path
 
 URLS = ["https://curs.bnr.ro/nbrfxrates10days.xml",
-        "https://www.bnr.ro/nbrfxrates10days.xml"]
+        "https://www.bnr.ro/nbrfxrates10days.xml",
+        "https://curs.bnr.ro/nbrfxrates.xml",
+        "https://www.bnr.ro/nbrfxrates.xml"]
+HEADERS = {"User-Agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                          "AppleWebKit/537.36 (KHTML, like Gecko) "
+                          "Chrome/126.0 Safari/537.36"),
+           "Accept": "application/xml,text/xml,*/*"}
 REG = Path("BNR_FX_REGISTRY_LIVE.json")
 XSD = "http://www.bnr.ro/xsd"
 
@@ -28,14 +32,22 @@ def canonical_sha256(payload: dict) -> str:
 
 
 def fetch_xml() -> bytes:
-    last = None
+    diags = []
     for u in URLS:
         try:
-            with urllib.request.urlopen(u, timeout=30) as r:
-                return r.read()
+            req = urllib.request.Request(u, headers=HEADERS)
+            with urllib.request.urlopen(req, timeout=30) as r:
+                data = r.read()
+                print(f"OK {u} — HTTP {r.status}, {len(data)} bytes")
+                return data
+        except urllib.error.HTTPError as ex:
+            diags.append(f"{u} → HTTP {ex.code} {ex.reason}")
         except Exception as ex:
-            last = ex
-    raise SystemExit(f"BNR inaccesibil pe ambele gazde: {last}")
+            diags.append(f"{u} → {type(ex).__name__}: {ex}")
+    print("DIAGNOSTIC — toate gazdele au eșuat:")
+    for d in diags:
+        print("  ", d)
+    raise SystemExit("BNR inaccesibil de pe runner — vezi diagnosticul de mai sus.")
 
 
 def parse_eur(xml_bytes: bytes) -> dict:
