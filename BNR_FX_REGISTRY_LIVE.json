@@ -1,0 +1,84 @@
+{
+ "registry_id": "BNR_FX_M1C01_LIVE_V1",
+ "status": "CANONICAL_GITHUB_RELAY",
+ "scope": "M1-C01 — curs de referință BNR EUR, releu GitHub actualizat automat (Action zilnic)",
+ "usable_in_production": true,
+ "currency": "EUR",
+ "publisher": "Banca Națională a României",
+ "source_domain": "bnr.ro",
+ "created_at_utc": "2026-08-28T19:08:44Z",
+ "maintenance": {
+  "owner": "titular SPN STOICA",
+  "rule": "Actualizat exclusiv de GitHub Action (bnr-fx-update). Sigiliul se recalculează la fiecare scriere; sigiliu rupt = registru refuzat de gate.",
+  "recompute_command": "python3 tools/update_fx_registry.py"
+ },
+ "coverage": {
+  "first_publication_date": "2026-08-17",
+  "last_publication_date": "2026-08-28",
+  "complete_archive": false
+ },
+ "records": {
+  "2026-08-17": {
+   "rate": 5.2419,
+   "official_source_url": "https://curs.bnr.ro/nbrfxrates10days.xml",
+   "official_source_label": "BNR — curs de referință publicat 17.08.2026 (releu GitHub)"
+  },
+  "2026-08-18": {
+   "rate": 5.2442,
+   "official_source_url": "https://curs.bnr.ro/nbrfxrates10days.xml",
+   "official_source_label": "BNR — curs de referință publicat 18.08.2026 (releu GitHub)"
+  },
+  "2026-08-19": {
+   "rate": 5.2452,
+   "official_source_url": "https://curs.bnr.ro/nbrfxrates10days.xml",
+   "official_source_label": "BNR — curs de referință publicat 19.08.2026 (releu GitHub)"
+  },
+  "2026-08-20": {
+   "rate": 5.2535,
+   "official_source_url": "https://curs.bnr.ro/nbrfxrates10days.xml",
+   "official_source_label": "BNR — curs de referință publicat 20.08.2026 (releu GitHub)"
+  },
+  "2026-08-21": {
+   "rate": 5.2581,
+   "official_source_url": "https://curs.bnr.ro/nbrfxrates10days.xml",
+   "official_source_label": "BNR — curs de referință publicat 21.08.2026 (releu GitHub)"
+  },
+  "2026-08-24": {
+   "rate": 5.2536,
+   "official_source_url": "https://curs.bnr.ro/nbrfxrates10days.xml",
+   "official_source_label": "BNR — curs de referință publicat 24.08.2026 (releu GitHub)"
+  },
+  "2026-08-25": {
+   "rate": 5.2534,
+   "official_source_url": "https://curs.bnr.ro/nbrfxrates10days.xml",
+   "official_source_label": "BNR — curs de referință publicat 25.08.2026 (releu GitHub)"
+  },
+  "2026-08-26": {
+   "rate": 5.2589,
+   "official_source_url": "https://curs.bnr.ro/nbrfxrates10days.xml",
+   "official_source_label": "BNR — curs de referință publicat 26.08.2026 (releu GitHub)"
+  },
+  "2026-08-27": {
+   "rate": 5.2588,
+   "official_source_url": "https://curs.bnr.ro/nbrfxrates10days.xml",
+   "official_source_label": "BNR — curs de referință publicat 27.08.2026 (releu GitHub)"
+  },
+  "2026-08-28": {
+   "rate": 5.2584,
+   "official_source_url": "https://curs.bnr.ro/nbrfxrates10days.xml",
+   "official_source_label": "BNR — curs de referință publicat 28.08.2026 (releu GitHub)"
+  }
+ },
+ "governance": {
+  "core_modified": false,
+  "automatic_send": false,
+  "automatic_propagation": false,
+  "human_approval_required": true,
+  "fail_closed_outside_coverage": false,
+  "outside_coverage_behaviour": "NECESITA_CLARIFICARE / FX_RATE_REQUIRED"
+ },
+ "integrity": {
+  "algorithm": "sha256-canonical-json",
+  "sha256": "041f80427d57fa00b52b82258504e9677677f82e5bd2e00f5fff30dd7cac2c60"
+ }
+}
