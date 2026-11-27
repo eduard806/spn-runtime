@@ -14,7 +14,7 @@
  },
  "coverage": {
   "first_publication_date": "2026-08-17",
-  "last_publication_date": "2026-11-26",
+  "last_publication_date": "2026-11-27",
   "complete_archive": false
  },
  "records": {
@@ -387,6 +387,11 @@
    "rate": 5.3431,
    "official_source_url": "https://curs.bnr.ro/nbrfxrates10days.xml",
    "official_source_label": "BNR — curs de referință publicat 26.11.2026 (releu GitHub)"
+  },
+  "2026-11-27": {
+   "rate": 5.3434,
+   "official_source_url": "https://curs.bnr.ro/nbrfxrates10days.xml",
+   "official_source_label": "BNR — curs de referință publicat 27.11.2026 (releu GitHub)"
   }
  },
  "governance": {
@@ -399,6 +404,6 @@
  },
  "integrity": {
   "algorithm": "sha256-canonical-json",
-  "sha256": "5d3baab9f7fbb94a2dc720023c394f1c999deeeb8f429f6b2bd52bc58179a84b"
+  "sha256": "4a5641aa7b8d4af8cee796d7dfe702246ed3d36763441de0d0e763fb84b30cce"
  }
 }
